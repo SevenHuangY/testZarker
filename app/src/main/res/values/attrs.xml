@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="indicator">
+        <attr name="indicatorNum" format="integer"/>
+        <attr name="indicatorWidth" format="dimension"/>
+        <attr name="indicatorMargin" format="dimension"/>
+        <attr name="indicatorSrc" format="reference"/>
+        <attr name="currentIndicatorSrc" format="reference"/>
+    </declare-styleable>
+
+</resources>

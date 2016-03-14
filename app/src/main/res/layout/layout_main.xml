@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:myView="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:background="#ff000000"
+    >
+
+    <RelativeLayout
+        android:id="@+id/framelayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.hyw.seven.baseUI.customViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            >
+        </com.hyw.seven.baseUI.customViewPager>
+
+        <com.hyw.seven.baseUI.indicatorView
+            android:id="@+id/indicatorContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:layout_alignBottom="@+id/viewpager"
+            myView:indicatorWidth="@dimen/guide_point_width"
+            myView:indicatorMargin="@dimen/guide_point_margin"
+            myView:indicatorSrc="@mipmap/guidepointgray"
+            myView:currentIndicatorSrc="@mipmap/guidepointwhite"
+            >
+        </com.hyw.seven.baseUI.indicatorView>
+
+    </RelativeLayout>
+
+    <GridView
+        android:id="@+id/gridView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/framelayout"
+        android:numColumns="3"
+
+
+        />
+</RelativeLayout>
