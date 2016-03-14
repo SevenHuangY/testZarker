@@ -55,7 +55,7 @@ public class MainActivity extends Activity
     //轮播间隔时间
     protected static final long MSG_DELAY = 3000;
 
-    private static final String TAG = "test";
+//    private static final String TAG = "test";
     private int i;
 
     @ViewById(R.id.viewpager)
@@ -86,7 +86,7 @@ public class MainActivity extends Activity
     @AfterViews
     void initView()
     {
-        Log.i(TAG, "initView");
+
         mAdapter = new viewPagerAdapter();
         mHandler = new updateHandler(this);
 
@@ -156,9 +156,27 @@ public class MainActivity extends Activity
         indicatorContent.addIndicator(imageResource.length);
         indicatorContent.setIndicator((Integer.MAX_VALUE / 2) % imageResource.length);
 
-        //开始轮播效果
-        mHandler.sendEmptyMessage(MSG_UPDATE_IMAGE);
-        Log.i(TAG, "send empty message");
+        /*
+         * 开始轮播效果,此处使用线程而不是直接sendEmptyMessageDelay(),是由于之前调用了mViewPager.setCurrentItem,
+         * 会触发onPageSelected回调
+         */
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    Thread.sleep(MSG_DELAY);
+                    mHandler.sendEmptyMessage(MSG_UPDATE_IMAGE);
+                }
+                catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
     }
 
 
@@ -182,11 +200,9 @@ public class MainActivity extends Activity
         public void handleMessage(Message msg)
         {
             MainActivity activity = mActivity.get();
-            Log.i(TAG, "handler");
             if (activity == null)
             {
                 //Activity已经回收，无需再处理UI了
-                Log.i(TAG, "null");
                 return ;
             }
 
@@ -195,13 +211,12 @@ public class MainActivity extends Activity
             if (activity.mHandler.hasMessages(MSG_UPDATE_IMAGE))
             {
                 activity.mHandler.removeMessages(MSG_UPDATE_IMAGE);
-                Log.i(TAG, "remove");
             }
+
             switch (msg.what)
             {
                 case MSG_UPDATE_IMAGE:
                     currentPageIndex++;
-                    Log.i(TAG, "MSG_UPDATE_IMAGE: " + currentPageIndex);
                     activity.mViewPager.setCurrentItem(currentPageIndex);
                     //准备下次播放
                     activity.mHandler.sendEmptyMessageDelayed(MSG_UPDATE_IMAGE, MSG_DELAY);
@@ -215,7 +230,6 @@ public class MainActivity extends Activity
                 case MSG_PAGE_CHANGED:
                     //记录当前的页号，避免播放的时候页面显示不正确。
                     currentPageIndex = msg.arg1;
-                    Log.i(TAG, "PAGE_CHANGED: " + currentPageIndex);
                     break;
                 default:
                     break;
