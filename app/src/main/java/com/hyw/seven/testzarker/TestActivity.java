@@ -66,7 +66,7 @@ public class TestActivity extends Activity
         context = this;
 
         gridViewData = new ArrayList<String>();
-        for(int i = 0; i < 20; i++)
+        for(int i = 0; i < 50; i++)
         {
             String tmp = new String("test: ");
             tmp += i;
