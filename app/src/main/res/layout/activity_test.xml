@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.hyw.seven.testzarker.TestActivity"
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true"
+    android:scrollbars="none">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:descendantFocusability="blocksDescendants"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <com.hyw.seven.baseUI.customViewPager
+                android:id="@+id/test_viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_alignParentTop="true"
+                >
+            </com.hyw.seven.baseUI.customViewPager>
+        </RelativeLayout>
+        <com.hyw.seven.baseUI.customGridView
+            android:id="@+id/test_gridview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ff000000"
+            >
+        </com.hyw.seven.baseUI.customGridView>
+    </LinearLayout>
+
+</ScrollView>
