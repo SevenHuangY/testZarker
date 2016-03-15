@@ -1,20 +1,26 @@
 package com.hyw.seven.testzarker;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.Window;
 import android.view.animation.AccelerateInterpolator;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hyw.seven.baseUI.customViewPager;
 import com.hyw.seven.baseUI.fixedSpeedScroller;
@@ -36,27 +42,27 @@ public class MainActivity extends Activity
     /**
      * 请求更新显示的View。
      */
-    protected static final int MSG_UPDATE_IMAGE  = 1;
+    protected static final int MSG_UPDATE_IMAGE = 1;
     /**
      * 请求暂停轮播。
      */
-    protected static final int MSG_KEEP_SILENT   = 2;
+    protected static final int MSG_KEEP_SILENT = 2;
     /**
      * 请求恢复轮播。
      */
-    protected static final int MSG_BREAK_SILENT  = 3;
+    protected static final int MSG_BREAK_SILENT = 3;
     /**
      * 记录最新的页号，当用户手动滑动时需要记录新页号，否则会使轮播的页面出错。
      * 例如当前如果在第一页，本来准备播放的是第二页，而这时候用户滑动到了末页，
      * 则应该播放的是第一页，如果继续按照原来的第二页播放，则逻辑上有问题。
      */
-    protected static final int MSG_PAGE_CHANGED  = 4;
+    protected static final int MSG_PAGE_CHANGED = 4;
 
     //轮播间隔时间
     protected static final long MSG_DELAY = 3000;
 
-//    private static final String TAG = "test";
-    private int i;
+    private static final String TAG = "test";
+
 
     @ViewById(R.id.viewpager)
     customViewPager mViewPager;
@@ -76,6 +82,12 @@ public class MainActivity extends Activity
 
     private fixedSpeedScroller mScroller;
 
+    private ArrayList<String> gridViewData;
+
+    private gridViewAdapter mGridViewAdapter;
+
+    private Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -86,6 +98,7 @@ public class MainActivity extends Activity
     @AfterViews
     void initView()
     {
+        context = this;
 
         mAdapter = new viewPagerAdapter();
         mHandler = new updateHandler(this);
@@ -145,8 +158,7 @@ public class MainActivity extends Activity
 
             mField.set(mViewPager, mScroller);
 
-        }
-        catch (Exception e)
+        } catch (Exception e)
         {
             e.printStackTrace();
         }
@@ -177,6 +189,23 @@ public class MainActivity extends Activity
             }
         }).start();
 
+        gridViewData = new ArrayList<String>();
+        for(int i = 0; i < 20; i++)
+        {
+            String tmp = new String("test: ");
+            tmp += i;
+            gridViewData.add(tmp);
+        }
+        mGridViewAdapter = new gridViewAdapter();
+        mGridView.setAdapter(mGridViewAdapter);
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                Toast.makeText(context, "Click: " + position + " id: " + id, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 
@@ -203,7 +232,7 @@ public class MainActivity extends Activity
             if (activity == null)
             {
                 //Activity已经回收，无需再处理UI了
-                return ;
+                return;
             }
 
 
@@ -235,6 +264,58 @@ public class MainActivity extends Activity
                     break;
             }
         }
+    }
+
+    private class gridViewAdapter extends BaseAdapter
+    {
+        Holder holder;
+
+        @Override
+        public int getCount()
+        {
+            return gridViewData.size();
+        }
+
+        @Override
+        public Object getItem(int position)
+        {
+            return gridViewData.get(position);
+        }
+
+        @Override
+        public long getItemId(int position)
+        {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent)
+        {
+            if(convertView == null)
+            {
+                holder = new Holder();
+
+                LayoutInflater inflater = LayoutInflater.from(context);
+                convertView = inflater.inflate(R.layout.gridview_item, null);
+                holder.im = (ImageView) convertView.findViewById(R.id.gridview_item_imageview);
+                holder.tx = (TextView) convertView.findViewById(R.id.gridview_item_textview);
+                convertView.setTag(holder);
+            }
+            else
+            {
+                holder = (Holder) convertView.getTag();
+            }
+
+            holder.tx.setText(gridViewData.get(position));
+
+            return convertView;
+        }
+    }
+
+    private class Holder
+    {
+        ImageView im;
+        TextView tx;
     }
 
     private class viewPagerAdapter extends PagerAdapter
